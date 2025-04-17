@@ -8,18 +8,12 @@ app1::app1(QWidget* parent)
 {
     ui.setupUi(this);
     connect(ui.addButton, &QPushButton::clicked, this, &app1::onAddButtonClicked);
+    connect(ui.deleteShape, &QPushButton::clicked, this, &app1::onDeleteButtonClicked);
 }
 
 app1::~app1()
 {
 }
-
-//void app1::onShapeSelected(const QString& shape)
-//{
-//    MyOpenGLWidget* glWidget = qobject_cast<MyOpenGLWidget*>(ui.openGLWidget);
-//    if (glWidget)
-//        glWidget->addShape(shape);
-//}
 
 void app1::onAddButtonClicked()
 {
@@ -41,4 +35,17 @@ void app1::onAddButtonClicked()
 
         ui.listWidget->addItem(shapeName);
     }
+}
+
+void app1::onDeleteButtonClicked()
+{
+    QListWidgetItem* selectedItem = ui.listWidget->currentItem();
+    if (!selectedItem) return;
+
+    QString shapeName = selectedItem->text();
+    MyOpenGLWidget* glWidget = qobject_cast<MyOpenGLWidget*>(ui.openGLWidget);
+    if (glWidget)
+        glWidget->removeShape(shapeName);
+
+    delete selectedItem;
 }

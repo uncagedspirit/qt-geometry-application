@@ -12,8 +12,8 @@ public:
     ~app1();
 
 private slots:
-    //void onShapeSelected(const QString& shape); // Add this
-    void onAddButtonClicked();  // New slot
+    void onAddButtonClicked();  
+    void onDeleteButtonClicked();
 
 
 private:

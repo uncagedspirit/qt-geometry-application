@@ -7,9 +7,21 @@ MyOpenGLWidget::MyOpenGLWidget(QWidget* parent)
 
 void MyOpenGLWidget::addShape(const QString& name, const QString& type)
 {
-    shapesToRender.append(qMakePair(name, type));
+    shapesToRender.append(Shape(name, type));
     update();
 }
+
+void MyOpenGLWidget::removeShape(const QString& name)
+{
+    for (int i = 0; i < shapesToRender.size(); ++i) {
+        if (shapesToRender[i].name == name) {
+            shapesToRender.removeAt(i);
+            update();
+            break;
+        }
+    }
+}
+
 
 
 
@@ -46,17 +58,19 @@ void MyOpenGLWidget::paintGL()
     glLoadIdentity();
     glTranslatef(0.0f, 0.0f, -5.0f);
 
-    for (const auto& shapePair : shapesToRender)
-    {
-        const QString& type = shapePair.second;
-        if (type == "Sphere")
+    for (const Shape& shape : shapesToRender) {
+        glPushMatrix();
+        glTranslatef(shape.posX, shape.posY, 0.0f);
+
+        if (shape.type == "Sphere")
             renderSphere();
-        else if (type == "Cylinder")
-            renderCylinder(); // Assuming you already added this
+        else if (shape.type == "Cylinder")
+            renderCylinder();
+
+        glPopMatrix();
     }
+
 }
-
-
 
 void MyOpenGLWidget::renderSphere()
 {
@@ -96,7 +110,6 @@ void MyOpenGLWidget::renderSphere()
         glEnd();
     }
 }
-
 
 void MyOpenGLWidget::renderCylinder()
 {

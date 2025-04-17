@@ -4,6 +4,9 @@
 #include <QOpenGLFunctions>
 #include <QString>
 
+#include "shape.h"
+
+
 class MyOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -11,7 +14,7 @@ class MyOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     explicit MyOpenGLWidget(QWidget* parent = nullptr);
     void addShape(const QString& name, const QString& type);
-    //void removeShape(const QString& name); // For future deletion
+    void removeShape(const QString& name);
 
 
 protected:
@@ -20,7 +23,8 @@ protected:
     void paintGL() override;
 
 private:
-    QVector<QPair<QString, QString>> shapesToRender; // name, type
+    QVector<Shape> shapesToRender;
+
     void renderSphere();
     void renderCylinder();
 
