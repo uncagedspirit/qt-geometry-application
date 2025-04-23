@@ -27,7 +27,7 @@
    <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>590</x>
       <y>10</y>
       <width>111</width>
       <height>31</height>
@@ -67,7 +67,7 @@
    <widget class="QPushButton" name="addButton">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>710</x>
       <y>10</y>
       <width>80</width>
       <height>31</height>
@@ -85,8 +85,8 @@
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>60</y>
+      <x>590</x>
+      <y>50</y>
       <width>201</width>
       <height>181</height>
      </rect>
@@ -95,8 +95,8 @@
    <widget class="QPushButton" name="deleteShape">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>260</y>
+      <x>590</x>
+      <y>240</y>
       <width>201</width>
       <height>31</height>
      </rect>

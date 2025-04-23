@@ -7,28 +7,62 @@ MyOpenGLWidget::MyOpenGLWidget(QWidget* parent)
 
 void MyOpenGLWidget::addShape(const QString& name, const QString& type)
 {
-    shapesToRender.append(Shape(name, type));
+    std::shared_ptr<Shape> shape;
+
+    if (type == "Sphere")
+        shape = std::make_shared<Sphere>(name);
+    else if (type == "Cylinder")
+        shape = std::make_shared<Cylinder>(name);
+    else if (type == "Cuboid")
+        shape = std::make_shared<Cuboid>(name);
+
+    if (shape)
+        shapesToRender.push_back(shape);  
+
     update();
 }
 
+
 void MyOpenGLWidget::removeShape(const QString& name)
 {
+
     for (int i = 0; i < shapesToRender.size(); ++i) {
-        if (shapesToRender[i].name == name) {
-            shapesToRender.removeAt(i);
-            update();
+        if (shapesToRender[i]->name == name) {
+            shapesToRender.remove(i);
             break;
         }
     }
+    update();
 }
 
 
-
-
-void MyOpenGLWidget::initializeGL()
-{
+void MyOpenGLWidget::initializeGL() {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    glShadeModel(GL_SMOOTH);
+
+    GLfloat lightAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat lightDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+    GLfloat lightSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat lightPosition[] = { 0.0f, 0.0f, 10.0f, 1.0f };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
+    GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat matShininess[] = { 5.0f };
+    // glMaterialfv(GL_FRONT, GL_AMBIENT, lightAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, lightDiffuse);
+    // glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
+
+    glEnable(GL_NORMALIZE);
 }
 
 void MyOpenGLWidget::resizeGL(int w, int h)
@@ -58,18 +92,17 @@ void MyOpenGLWidget::paintGL()
     glLoadIdentity();
     glTranslatef(0.0f, 0.0f, -5.0f);
 
-    for (const Shape& shape : shapesToRender) {
+    for (auto shape : shapesToRender) {
         glPushMatrix();
-        glTranslatef(shape.posX, shape.posY, 0.0f);
+        glTranslatef(shape->posX, shape->posY, 0.0f);
 
-        if (shape.type == "Sphere")
+        if (shape->type() == "Sphere")
             renderSphere();
-        else if (shape.type == "Cylinder")
+        else if (shape->type() == "Cylinder")
             renderCylinder();
 
         glPopMatrix();
     }
-
 }
 
 void MyOpenGLWidget::renderSphere()
@@ -78,18 +111,22 @@ void MyOpenGLWidget::renderSphere()
     const int slices = 30;
     const int stacks = 30;
 
-    for (int i = 0; i <= stacks; ++i) {
-        float lat = M_PI * (-0.5 + (float)i / stacks);
-        float z = sin(lat);
-        float r = cos(lat);
+    for (int i = 0; i < stacks; ++i) {
+        float lat0 = M_PI * (-0.5 + (float)i / stacks);
+        float lat1 = M_PI * (-0.5 + (float)(i + 1) / stacks);
+        float z0 = sin(lat0), zr0 = cos(lat0);
+        float z1 = sin(lat1), zr1 = cos(lat1);
 
-        glBegin(GL_LINE_LOOP);
+        glBegin(GL_QUAD_STRIP);
         for (int j = 0; j <= slices; ++j) {
-            float lng = 2 * M_PI * (float)j / slices;
-            float x = cos(lng);
-            float y = sin(lng);
-            // Swap y <-> z
-            glVertex3f(x * r * radius, z * radius, y * r * radius);
+            float lng = 2 * M_PI * (float)(j) / slices;
+            float x = cos(lng), y = sin(lng);
+
+            glNormal3f(x * zr1, z1, y * zr1);
+            glVertex3f(x * zr1 * radius, z1 * radius, y * zr1 * radius);
+
+            glNormal3f(x * zr0, z0, y * zr0);
+            glVertex3f(x * zr0 * radius, z0 * radius, y * zr0 * radius);
         }
         glEnd();
     }

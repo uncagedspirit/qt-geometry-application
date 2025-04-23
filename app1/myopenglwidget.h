@@ -5,6 +5,10 @@
 #include <QString>
 
 #include "shape.h"
+#include "sphere.h"
+#include "cylinder.h"
+#include "cuboid.h"
+
 
 
 class MyOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -23,7 +27,7 @@ protected:
     void paintGL() override;
 
 private:
-    QVector<Shape> shapesToRender;
+    QList<std::shared_ptr<Shape>> shapesToRender;
 
     void renderSphere();
     void renderCylinder();

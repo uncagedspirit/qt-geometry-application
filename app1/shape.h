@@ -1,19 +1,16 @@
-#ifndef SHAPE_H
-#define SHAPE_H
-
+#pragma once
 #include <QString>
 
-struct Shape {
+class Shape {
+public:
     QString name;
-    QString type;
-    float posX;
-    float posY;
+    float posX = 0.0f, posY = 0.0f;
 
-    Shape(const QString& name, const QString& type, float x = 0.0f, float y = 0.0f)
-        : name(name), type(type), posX(x), posY(y) {
+    Shape(const QString& name, float x = 0.0f, float y = 0.0f)
+        : name(name), posX(x), posY(y) {
     }
+
+    virtual void render() const = 0;
+    virtual QString type() const = 0;
+    virtual ~Shape() {}
 };
-
-
-#endif // SHAPE_H
-#pragma once

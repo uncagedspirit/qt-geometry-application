@@ -120,7 +120,11 @@
     <QtMoc Include="myopenglwidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cone.h" />
+    <ClInclude Include="cuboid.h" />
+    <ClInclude Include="cylinder.h" />
     <ClInclude Include="shape.h" />
+    <ClInclude Include="sphere.h" />
     <QtMoc Include="namedialog.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
